@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Dashboard anggota, affiliate, dan admin Bos Pangan.">
+<title>Dashboard | Bos Pangan</title>
+<style>
+:root{--ink:#193e34;--green:#195d43;--pale:#edf4e9;--line:#dce3d7;--blue:#e8f4fc}*{box-sizing:border-box}body{margin:0;background:#f7f9f4;color:var(--ink);font:15px/1.5 system-ui,sans-serif}header{background:#a9d5f6;padding:16px max(4%,calc((100% - 1120px)/2));display:flex;justify-content:space-between;align-items:center;gap:14px}a{color:var(--green)}button,input,select,textarea{font:inherit}button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 13px;cursor:pointer}button.primary{background:var(--green);color:#fff;border-color:var(--green)}button:disabled{opacity:.55;cursor:wait}main{width:min(1120px,92%);margin:28px auto 70px}.muted{color:#64736a}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;margin:16px 0}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.stat{background:var(--pale);padding:16px;border-radius:12px}.stat strong{display:block;font-size:27px}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button.active{background:var(--green);color:#fff}label{display:grid;gap:5px;margin:10px 0}input,select,textarea{border:1px solid var(--line);border-radius:9px;padding:10px;width:100%;max-width:100%}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px;vertical-align:top}th{background:#f4f7f0}.table-wrap{overflow:auto}.status{padding:10px;border-radius:9px;background:#f2f5ed;min-height:40px}.danger{color:#a33}.code{font-family:ui-monospace,monospace;overflow-wrap:anywhere;background:#f1f5ed;padding:9px;border-radius:8px}.hidden{display:none!important}@media(max-width:600px){header{align-items:flex-start;flex-direction:column}main{margin-top:18px}.panel{padding:14px}th,td{padding:8px}}
+</style>
+</head>
+<body>
+<header><div><strong>Bos Pangan</strong><div class="muted">Pusat keanggotaan</div></div><div class="row" style="flex:0 1 auto"><a href="/">Kembali ke website</a><button id="logout">Keluar</button></div></header>
+<main>
+<section class="panel"><p class="muted">DASHBOARD</p><h1 id="welcome">Memuat akun…</h1><div id="identity" class="muted"></div><div id="roleBadge" class="status">Memeriksa hak akses…</div></section>
+<div id="status" class="status" role="status">Memuat data…</div>
+<section id="memberView" class="hidden">
+ <h2>Dashboard Member</h2>
+ <div class="cards">
+  <div class="stat"><span>Role akun</span><strong>Member</strong><small>Akses anggota</small></div>
+  <div class="stat"><span>Produk favorit</span><strong id="favoriteCount">0</strong><small>Tersimpan di perangkat ini</small></div>
+ </div>
+ <section class="panel"><h3>Profil Anggota</h3><form id="profileForm"><label>Nama tampilan<input id="displayName" maxlength="80" required></label><button class="primary">Simpan profil</button></form></section>
+ <section class="panel"><h3>Program Affiliate</h3><p>Ajukan akun affiliate untuk mendapatkan kode referral setelah disetujui admin.</p><form id="affiliateForm"><label>Alasan bergabung<textarea id="motivation" maxlength="500" placeholder="Ceritakan bagaimana Anda ingin membantu mempromosikan produk dan edukasi warung."></textarea></label><button class="primary">Ajukan menjadi Affiliate</button></form><div id="applicationStatus" class="muted"></div></section>
+</section>
+<section id="affiliateView" class="hidden">
+ <h2>Dashboard Affiliate</h2>
+ <div class="cards">
+  <div class="stat"><span>Referral terdaftar</span><strong id="referralCount">0</strong></div>
+  <div class="stat"><span>Total komisi disetujui/dibayar</span><strong id="commissionTotal">Rp0</strong></div>
+  <div class="stat"><span>Saldo tersedia ditarik</span><strong id="pendingTotal">Rp0</strong></div>
+ </div>
+ <section class="panel"><h3>Link Referral</h3><p>Bagikan tautan ini. Pendaftaran baru melalui tautan akan dicatat sebagai referral.</p><div id="refLink" class="code"></div><button id="copyRef" class="primary">Salin link referral</button></section>
+ <section class="panel"><h3>Riwayat Komisi</h3><div id="affiliateCommissions" class="table-wrap"></div></section>
+ <section class="panel"><h3>Ajukan Penarikan</h3><p>Saldo tersedia: <strong id="withdrawalBalance">Rp0</strong></p><form id="withdrawalForm"><div class="row"><label>Nominal penarikan (Rp)<input id="withdrawalAmount" type="number" min="50000" step="1000" required></label><label>Metode pembayaran<select id="payoutMethod" required><option value="bank">Transfer bank</option><option value="ewallet">E-wallet</option></select></label></div><div class="row"><label>Nama pemilik rekening/akun<input id="recipientName" maxlength="100" required></label><label>Nomor rekening/nomor e-wallet<input id="payoutDestination" maxlength="160" required></label></div><div class="row"><button id="savePayoutDetails" type="button">Simpan tujuan pembayaran</button><button id="withdrawalSubmit" class="primary">Kirim pengajuan penarikan</button></div></form><p id="withdrawalMinimumNotice" class="muted">Minimum penarikan Rp50.000.</p><p class="muted">Tujuan pembayaran tersimpan untuk pengajuan berikutnya. Data ini hanya ditampilkan kepada akun affiliate terkait.</p></section>
+ <section class="panel"><h3>Riwayat Penarikan</h3><div id="affiliatePayouts" class="table-wrap"></div></section>
+ <section class="panel"><h3>Referral</h3><div id="affiliateReferrals" class="table-wrap"></div></section>
+</section>
+<section id="adminView" class="hidden">
+ <h2>Dashboard Admin</h2>
+ <div class="cards">
+  <div class="stat"><span>Total anggota</span><strong id="memberTotal">0</strong></div>
+  <div class="stat"><span>Pengajuan affiliate</span><strong id="applicationTotal">0</strong></div>
+  <div class="stat"><span>Total komisi tercatat</span><strong id="adminCommissionTotal">Rp0</strong></div>
+ </div>
+ <section class="panel"><h3>Anggota & Hak Akses</h3><p class="muted">Perubahan role diproses melalui fungsi admin yang memverifikasi role di database.</p><div id="membersTable" class="table-wrap"></div></section>
+ <section class="panel"><h3>Pengajuan Affiliate</h3><div id="applicationsTable" class="table-wrap"></div></section>
+ <section class="panel"><h3>Catat Komisi</h3><form id="commissionForm" class="row"><label style="min-width:180px">Affiliate<select id="commissionAffiliate" required></select></label><label style="min-width:120px">Nominal (Rp)<input id="commissionAmount" type="number" min="1" step="1" required></label><label style="min-width:180px">Catatan<input id="commissionNote" maxlength="250"></label><button class="primary" style="align-self:end">Simpan komisi</button></form><div id="adminCommissions" class="table-wrap"></div></section>
+ <section class="panel"><h3>Pengajuan Penarikan Affiliate</h3><div id="adminPayoutRequests" class="table-wrap"></div></section>
+</section>
+</main>
+<script type="module" src="/dashboard.js"></script>
+</body></html>

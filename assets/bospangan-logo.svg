@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 150" role="img" aria-labelledby="title desc">
+<title id="title">Bos Pangan</title><desc id="desc">Logo toko sembako dengan atap merah, etalase bahan pokok, dan nama Bos Pangan.</desc>
+<defs><linearGradient id="gold" x1="0" x2="1"><stop stop-color="#e9a900"/><stop offset="1" stop-color="#ffd43b"/></linearGradient></defs>
+<g transform="translate(8 6)">
+ <path d="M14 68 Q15 20 66 13 Q117 5 145 48 Q160 75 145 115 Q125 143 75 137 Q20 133 14 92Z" fill="none" stroke="#0878bd" stroke-width="4"/>
+ <path d="M4 112 Q52 144 139 113" fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
+ <path d="M28 57 L43 31 Q49 21 63 21 H111 Q125 21 131 34 L144 58Z" fill="#d71920" stroke="#9f1018" stroke-width="2"/>
+ <path d="M40 36 H58 L53 58 H31Z" fill="#fff"/><path d="M65 23 H84 V58 H57Z" fill="#fff"/><path d="M91 23 H108 L119 58 H89Z" fill="#fff"/><path d="M116 36 H131 L145 58 H123Z" fill="#fff"/>
+ <path d="M28 57 H145 V69 H28Z" fill="#b51620"/>
+ <path d="M35 69 H139 V119 H35Z" fill="#f4c36b" stroke="#183b5a" stroke-width="4"/>
+ <path d="M43 77 H131 V111 H43Z" fill="#fff8e7"/>
+ <path d="M49 83 H69 V108 H49Z" fill="#e8b34d"/><path d="M73 83 H94 V108 H73Z" fill="#f2d28a"/><path d="M98 83 H125 V108 H98Z" fill="#d9e9f3"/>
+ <path d="M43 95 H131" stroke="#183b5a" stroke-width="3"/><path d="M84 96 V119" stroke="#183b5a" stroke-width="3"/>
+ <circle cx="58" cy="91" r="4" fill="#d71920"/><circle cx="83" cy="91" r="4" fill="#2f9b62"/><circle cx="111" cy="91" r="4" fill="#e4a400"/>
+</g>
+<g font-family="Arial,Helvetica,sans-serif" fill="#082b50">
+ <text x="178" y="62" font-size="43" font-weight="800" letter-spacing="-1.4">Bos Pangan</text>
+ <text x="178" y="108" font-size="47" font-weight="900" letter-spacing="-1.6">Sembako</text>
+ <path d="M180 119 Q315 132 455 116" fill="none" stroke="#f2b600" stroke-width="6" stroke-linecap="round"/>
+ <text x="180" y="143" font-size="15" font-weight="700" letter-spacing=".2">Portal Edukasi &amp; Informasi Usaha Sembako</text>
+</g></svg>
