@@ -1,6 +1,6 @@
 # Bos Pangan Commerce Backend
 
-This repository now includes a Supabase commerce backend foundation alongside the existing membership/affiliate system.
+This repository now includes a Supabase commerce backend foundation alongside the existing membership/affiliate system. The Supabase project configured for this website is `pasiitgynpevahsfudlg` and is dedicated exclusively to Bos Pangan; do not reuse it for Teman Warung Sembako or another website.
 
 ## What is included
 
@@ -17,10 +17,10 @@ This repository now includes a Supabase commerce backend foundation alongside th
 
 ## Setup
 
-1. Open the Supabase project already configured in `auth-config.js`.
+1. Open the dedicated Bos Pangan Supabase project with Project ID `pasiitgynpevahsfudlg` (the same Project URL configured in `auth-config.js`). The Supabase dashboard display name may still show an older label; verify the Project ID before running SQL.
 2. Run `supabase/commerce-backend.sql` in Supabase SQL Editor after the existing `supabase/schema.sql` and affiliate migrations have been applied.
 3. Register the account that should become the first Super Admin.
-4. Edit `supabase/initial-super-admin.sql`, replace `REPLACE_WITH_YOUR_EMAIL` with that account's email, and run it in SQL Editor.
+4. Run `supabase/initial-super-admin.sql` in SQL Editor. It is already configured for `forbuldozer@gmail.com` and will stop with an explicit error if that account has not registered yet.
 5. In the Super Admin dashboard, set the owner notification email and default tax percentage.
 6. Configure Edge Function secrets:
    - `SUPABASE_URL`
