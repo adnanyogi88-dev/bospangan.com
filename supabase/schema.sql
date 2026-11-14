@@ -141,7 +141,7 @@ begin
   end if;
   if p_approve then
     update public.profiles set role = 'affiliate' where id = p_user_id;
-    v_code := 'TWS' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8));
+    v_code := 'BOS' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8));
     insert into public.affiliate_accounts(user_id, referral_code)
       values (p_user_id, v_code)
       on conflict (user_id) do nothing;
@@ -164,7 +164,7 @@ begin
   if not found then raise exception 'User profile not found'; end if;
   if p_role = 'affiliate' then
     insert into public.affiliate_accounts(user_id, referral_code, status)
-      values (p_user_id, 'TWS' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8)), 'active')
+      values (p_user_id, 'BOS' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8)), 'active')
       on conflict (user_id) do update set status = 'active';
   elsif p_role = 'member' or p_role = 'admin' then
     update public.affiliate_accounts set status = 'paused' where user_id = p_user_id;
