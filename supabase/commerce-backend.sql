@@ -300,3 +300,20 @@ create trigger trg_queue_owner_order_notification after insert on public.orders
 for each row execute function public.queue_owner_order_notification();
 
 commit;
+
+
+-- Product-specific opt-in subscriptions and per-line tax snapshots.
+create table if not exists public.product_notification_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid not null references public.products(id) on delete cascade,
+  email text not null,
+  consented_at timestamptz not null default now(),
+  unique(product_id,email)
+);
+alter table public.product_notification_subscriptions enable row level security;
+drop policy if exists "admins manage product subscriptions" on public.product_notification_subscriptions;
+create policy "admins manage product subscriptions" on public.product_notification_subscriptions
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
+grant select, insert, update, delete on public.product_notification_subscriptions to authenticated;
+alter table public.order_items add column if not exists tax_percent numeric(5,2) not null default 0 check (tax_percent between 0 and 100);
+alter table public.order_items add column if not exists tax_amount numeric(14,2) not null default 0 check (tax_amount >= 0);
