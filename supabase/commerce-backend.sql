@@ -317,3 +317,14 @@ for all to authenticated using (public.is_admin()) with check (public.is_admin()
 grant select, insert, update, delete on public.product_notification_subscriptions to authenticated;
 alter table public.order_items add column if not exists tax_percent numeric(5,2) not null default 0 check (tax_percent between 0 and 100);
 alter table public.order_items add column if not exists tax_amount numeric(14,2) not null default 0 check (tax_amount >= 0);
+
+-- Allow signed-in customers to register their own browser push subscription.
+drop policy if exists "users register own push subscription" on public.web_push_subscriptions;
+create policy "users register own push subscription" on public.web_push_subscriptions
+for insert to authenticated with check (user_id = auth.uid());
+drop policy if exists "users read own push subscription" on public.web_push_subscriptions;
+create policy "users read own push subscription" on public.web_push_subscriptions
+for select to authenticated using (user_id = auth.uid() or public.is_admin());
+drop policy if exists "users delete own push subscription" on public.web_push_subscriptions;
+create policy "users delete own push subscription" on public.web_push_subscriptions
+for delete to authenticated using (user_id = auth.uid() or public.is_admin());
