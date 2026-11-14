@@ -60,10 +60,11 @@ Deno.serve(async (req) => {
       return { product: p, quantity: qty, line: Number(p.price) * qty };
     });
     const subtotal = normalized.reduce((sum, x) => sum + x.line, 0);
-    const taxPercent = normalized.length
-      ? Math.max(...normalized.map(x => x.product.tax_percent == null ? defaultTax : Number(x.product.tax_percent)))
-      : defaultTax;
-    const taxAmount = Number((subtotal * taxPercent / 100).toFixed(2));
+    const taxPercent = normalized.length ? defaultTax : defaultTax;
+    const taxAmount = Number(normalized.reduce((sum, x) => {
+      const rate = x.product.tax_percent == null ? defaultTax : Number(x.product.tax_percent);
+      return sum + (x.line * rate / 100);
+    }, 0).toFixed(2));
     const total = Number((subtotal + taxAmount).toFixed(2));
 
     const { data: authData } = await db.auth.getUser(
@@ -105,7 +106,7 @@ Deno.serve(async (req) => {
         });
         if (!sent.ok) {
           const { error: queueError } = await db.from("notification_queue").update({ status: "failed", last_error: "Email provider error" })
-            .eq("event_type", "new_order").eq("recipient_email", ownerEmail).eq("status", "pending");
+            .eq("event_type", "new_order").eq("recipient_email", ownerEmail).eq("status", "pending").eq("payload->>order_id", order.id);
           console.error("Owner email failed", await sent.text(), queueError);
         } else {
           await db.from("notification_queue").update({ status: "sent", sent_at: new Date().toISOString() })
