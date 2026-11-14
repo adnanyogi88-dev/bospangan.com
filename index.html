@@ -140,8 +140,8 @@
 const escapeText=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const products=CATALOG.map(([name,category,image,source],i)=>[escapeText(name),category,'','#ffffff',[['Unit katalog',null]],image,source,i]);
 const $=id=>document.getElementById(id),rp=n=>'Rp'+n.toLocaleString('id-ID');
-function read(key,fallback){try{return JSON.parse(localStorage.getItem('tws-reference-v1-'+key))||fallback}catch{return fallback}}
-function save(key,value){try{localStorage.setItem('tws-reference-v1-'+key,JSON.stringify(value))}catch{}}
+function read(key,fallback){try{return JSON.parse(localStorage.getItem('bospangan-v1-'+key))||fallback}catch{return fallback}}
+function save(key,value){try{localStorage.setItem('bospangan-v1-'+key,JSON.stringify(value))}catch{}}
 let limit=24;let cart=read('cart',{}),favorites=read('favorites',[]),category='Semua';
 if(!Array.isArray(favorites))favorites=[];
 if(!cart||typeof cart!=='object'||Array.isArray(cart))cart={};
