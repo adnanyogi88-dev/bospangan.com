@@ -21,7 +21,7 @@ async function init(){
  $("favoriteCount").textContent=(()=>{try{return JSON.parse(localStorage.getItem("tws-reference-v1-favorites")||"[]").length}catch{return 0}})();
  $("memberView").classList.remove("hidden");
  if(profile.role==="affiliate"){$("memberView").classList.add("hidden");$("affiliateView").classList.remove("hidden");await loadAffiliate();}
- if(profile.role==="admin"){$("memberView").classList.add("hidden");$("adminView").classList.remove("hidden");await loadAdmin();}
+ if(["admin","super_admin"].includes(profile.role)){$("memberView").classList.add("hidden");$("affiliateView").classList.add("hidden");$("adminView").classList.remove("hidden");await loadAdmin();}
  if(profile.role==="member")await loadApplication();
  status("Dashboard siap. Data ditampilkan sesuai hak akses akun.");
 }
