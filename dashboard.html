@@ -6,11 +6,74 @@
 <title>Dashboard | Bos Pangan</title>
 <style>
 :root{--ink:#193e34;--green:#195d43;--pale:#edf4e9;--line:#dce3d7;--blue:#e8f4fc}*{box-sizing:border-box}body{margin:0;background:#f7f9f4;color:var(--ink);font:15px/1.5 system-ui,sans-serif}header{background:#a9d5f6;padding:16px max(4%,calc((100% - 1120px)/2));display:flex;justify-content:space-between;align-items:center;gap:14px}a{color:var(--green)}button,input,select,textarea{font:inherit}button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 13px;cursor:pointer}button.primary{background:var(--green);color:#fff;border-color:var(--green)}button:disabled{opacity:.55;cursor:wait}main{width:min(1120px,92%);margin:28px auto 70px}.muted{color:#64736a}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;margin:16px 0}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.stat{background:var(--pale);padding:16px;border-radius:12px}.stat strong{display:block;font-size:27px}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button.active{background:var(--green);color:#fff}label{display:grid;gap:5px;margin:10px 0}input,select,textarea{border:1px solid var(--line);border-radius:9px;padding:10px;width:100%;max-width:100%}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px;vertical-align:top}th{background:#f4f7f0}.table-wrap{overflow:auto}.status{padding:10px;border-radius:9px;background:#f2f5ed;min-height:40px}.danger{color:#a33}.code{font-family:ui-monospace,monospace;overflow-wrap:anywhere;background:#f1f5ed;padding:9px;border-radius:8px}.hidden{display:none!important}@media(max-width:600px){header{align-items:flex-start;flex-direction:column}main{margin-top:18px}.panel{padding:14px}th,td{padding:8px}}
+
+/* Admin workspace inspired by the supplied DOSS reference */
+.admin-sidebar{display:none}
+body.admin-mode{background:#f3f5f9;color:#202b45}
+body.admin-mode>header{margin-left:250px;width:calc(100% - 250px);padding:15px 28px;background:#fff;border-bottom:1px solid #e5e9f1}
+body.admin-mode>header .muted{color:#7c879b}
+body.admin-mode .dashboard-main{width:auto;max-width:none;margin:0 0 0 250px;padding:28px 30px 60px;min-height:calc(100vh - 70px)}
+body.admin-mode .admin-sidebar{display:flex;position:fixed;inset:0 auto 0 0;width:250px;background:#202a43;color:#dce4f4;z-index:50;flex-direction:column;overflow-y:auto;box-shadow:4px 0 18px #17203318}
+.admin-brand{height:70px;display:flex;align-items:center;gap:11px;padding:0 22px;color:#fff;font-weight:850;letter-spacing:.12em;border-bottom:1px solid #ffffff14}
+.admin-brand-mark{width:32px;height:32px;border-radius:10px;background:#0bbf94;display:grid;place-items:center;color:#fff;font-weight:900}
+.admin-nav{padding:15px 12px 30px;display:grid;gap:5px}
+.admin-nav-label{padding:14px 12px 6px;color:#8491ab;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.admin-nav button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:#c1cadd;text-align:left;padding:11px 12px;border-radius:8px;font-size:13px}
+.admin-nav button:hover,.admin-nav button.active{background:#34415f;color:#fff}
+.admin-nav button.active{box-shadow:inset 3px 0 #0cc49a}
+.admin-nav .nav-icon{width:20px;text-align:center;font-size:15px}
+body.admin-mode #adminView{display:block}
+body.admin-mode #adminView>h2{font-size:25px;margin:0 0 18px;color:#202b45}
+body.admin-mode .panel{border:1px solid #e7eaf0;border-radius:10px;box-shadow:0 4px 14px #17203308;padding:20px;margin:18px 0;background:#fff}
+body.admin-mode .cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+body.admin-mode .stat{background:#fff;border:1px solid #e7eaf0;border-radius:10px;padding:18px;box-shadow:0 3px 12px #17203308}
+body.admin-mode .stat strong{font-size:27px;color:#202b45}
+body.admin-mode .stat span,body.admin-mode .stat small{color:#77839a}
+body.admin-mode h3{color:#202b45;margin-top:0}
+body.admin-mode table{font-size:13px;min-width:680px}
+body.admin-mode th{background:#f7f9fc;color:#7d899e;font-size:10px;letter-spacing:.07em;text-transform:uppercase}
+body.admin-mode th,body.admin-mode td{border-bottom:1px solid #edf0f4;padding:13px 12px}
+body.admin-mode input,body.admin-mode select,body.admin-mode textarea{border:1px solid #dfe4ec;border-radius:6px;background:#fff;color:#29354e;padding:9px}
+body.admin-mode button.primary{background:#0bbf94;border-color:#0bbf94;color:white}
+body.admin-mode .tabs button{border-radius:7px;padding:9px 15px}
+body.admin-mode .tabs button.active{background:#202a43;border-color:#202a43}
+body.admin-mode .status{background:#eefaf6;color:#187b62;border:1px solid #d5f1e7}
+body.admin-mode .muted{color:#8490a4}
+body.admin-mode .table-wrap{overflow:auto}
+.admin-content-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.admin-content-heading h2{margin:0}
+@media(max-width:800px){
+ body.admin-mode>header{margin-left:0;width:100%;padding:12px 16px}
+ body.admin-mode .admin-sidebar{width:76px}
+ .admin-brand{padding:0;justify-content:center}
+ .admin-brand .brand-text,.admin-nav-label,.admin-nav button .nav-text{display:none}
+ .admin-nav{padding:12px 8px}
+ .admin-nav button{justify-content:center;padding:13px 6px}
+ .admin-nav button .nav-icon{font-size:18px}
+ body.admin-mode .dashboard-main{margin-left:76px;padding:18px 12px 40px}
+ body.admin-mode table{min-width:620px}
+}
+@media(max-width:480px){
+ body.admin-mode .dashboard-main{padding:14px 9px 32px}
+ body.admin-mode .panel{padding:13px;margin:12px 0}
+ body.admin-mode .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body.admin-mode .stat{padding:12px}
+ body.admin-mode .stat strong{font-size:21px}
+}
+
 </style>
 </head>
 <body>
+<aside class="admin-sidebar" aria-label="Navigasi admin"><div class="admin-brand"><span class="admin-brand-mark">B</span><span class="brand-text">BOS PANGAN</span></div><nav class="admin-nav">
+<div class="admin-nav-label">Dashboard</div><button class="active" data-admin-target="overview"><span class="nav-icon">▦</span><span class="nav-text">Ringkasan</span></button>
+<div class="admin-nav-label">Publication</div><button data-admin-target="banners"><span class="nav-icon">▧</span><span class="nav-text">Banner</span></button><button data-admin-target="content"><span class="nav-icon">▤</span><span class="nav-text">Artikel & Halaman</span></button>
+<div class="admin-nav-label">Goods</div><button data-admin-target="products"><span class="nav-icon">▣</span><span class="nav-text">Produk</span></button><button data-admin-target="categories"><span class="nav-icon">▦</span><span class="nav-text">Kategori Produk</span></button>
+<div class="admin-nav-label">Sales</div><button data-admin-target="orders"><span class="nav-icon">🛒</span><span class="nav-text">Transaksi</span></button><button data-admin-target="invoices"><span class="nav-icon">▤</span><span class="nav-text">Invoice</span></button><button data-admin-target="customers"><span class="nav-icon">♙</span><span class="nav-text">Customer</span></button>
+<div class="admin-nav-label">Growth</div><button data-admin-target="campaigns"><span class="nav-icon">✉</span><span class="nav-text">Email & Push</span></button><button data-admin-target="affiliate"><span class="nav-icon">♧</span><span class="nav-text">Affiliate</span></button>
+<div class="admin-nav-label">Analytics & Settings</div><button data-admin-target="reports"><span class="nav-icon">▥</span><span class="nav-text">Laporan</span></button><button data-admin-target="settings"><span class="nav-icon">⚙</span><span class="nav-text">Pengaturan Toko</span></button><button data-admin-target="users"><span class="nav-icon">♧</span><span class="nav-text">Admin & Hak Akses</span></button>
+</nav></aside>
 <header><div><strong>Bos Pangan</strong><div class="muted">Pusat keanggotaan</div></div><div class="row" style="flex:0 1 auto"><a href="/">Kembali ke website</a><button id="logout">Keluar</button></div></header>
-<main>
+<main class="dashboard-main">
 <section class="panel"><p class="muted">DASHBOARD</p><h1 id="welcome">Memuat akun…</h1><div id="identity" class="muted"></div><div id="roleBadge" class="status">Memeriksa hak akses…</div></section>
 <div id="status" class="status" role="status">Memuat data…</div>
 <section id="memberView" class="hidden">
