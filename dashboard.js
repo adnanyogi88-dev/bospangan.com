@@ -31,7 +31,7 @@ function setupAdminNavigation(){
   const all=[...admin.querySelectorAll(":scope > .panel")];
   all.forEach(p=>p.classList.add("hidden"));
   admin.querySelectorAll(":scope > .cards").forEach(p=>p.classList.add("hidden"));
-  panels.filter(Boolean).forEach(p=>p.classList.remove("hidden"));
+  panels.filter(Boolean).forEach(p=>{p.classList.remove("hidden");p.classList.add("admin-panel-active");});
  }
  function showCommerceTab(tab){
   const section=$("commerceAdmin");
