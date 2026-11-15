@@ -51,6 +51,7 @@ function setupAdminNavigation(){
   const names={banners:"Banner",content:"Artikel & Halaman",categories:"Kategori Produk",invoices:"Invoice",customers:"Customer",reports:"Laporan"};
   placeholder.innerHTML='<h3>'+esc(names[key]||"Modul Admin")+'</h3><p class="muted">Kerangka antarmuka modul '+esc(names[key]||"ini")+' sedang disiapkan. Data dan tindakan belum dihubungkan ke database sehingga tidak ada informasi contoh yang ditampilkan sebagai data nyata.</p><div class="status">Belum terhubung ke backend.</div>';
  }));
+ destinations.overview();
 }
 
 async function init(){
