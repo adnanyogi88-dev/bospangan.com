@@ -23,7 +23,9 @@ function panelMarkup() {
     </div>
     <p id="commerceStatus" class="status" role="status">Panel siap.</p>
     <div id="tab-products">
-      <form id="productForm" class="panel">
+      <div class="admin-content-heading"><div><h2>Semua Produk</h2><p class="muted">Kelola katalog, harga, stok, foto, dan pajak produk.</p></div><button type="button" class="primary" id="addProductButton">+ Tambah Produk</button></div>
+      <div class="row" style="margin:12px 0"><label style="min-width:180px">Kategori<select id="productCategoryFilter"><option value="">Semua kategori</option>${categories.map(c=>'<option>'+c+'</option>').join("")}</select></label><label style="min-width:180px">Status<select id="productStatusFilter"><option value="">Semua status</option><option value="published">Tayang</option><option value="draft">Draft</option></select></label><label style="min-width:220px">Cari produk<input id="productSearch" type="search" placeholder="Nama produk atau SKU..."></label></div>
+      <form id="productForm" class="panel hidden">
         <h3 id="productFormTitle">Tambah produk</h3>
         <div class="row">
           <label>Nama produk<input name="name" maxlength="160" required></label>
@@ -82,6 +84,10 @@ function panelMarkup() {
     section.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===button));
     ["products","orders","campaigns","settings"].forEach(tab=>$("tab-"+tab).classList.toggle("hidden",tab!==button.dataset.tab));
   });
+  $("addProductButton").onclick=()=>{$("productForm").classList.remove("hidden");resetForm();$("productForm").scrollIntoView({behavior:"smooth",block:"start"});};
+  const applyProductFilters=()=>{const q=$("productSearch").value.trim().toLowerCase(),cat=$("productCategoryFilter").value,statusFilter=$("productStatusFilter").value; $("productsTable").querySelectorAll("tbody tr").forEach(row=>{const matchText=row.innerText.toLowerCase().includes(q),matchCat=!cat||row.dataset.category===cat,matchStatus=!statusFilter||row.dataset.status===statusFilter;row.hidden=!(matchText&&matchCat&&matchStatus);});};
+  ["productSearch","productCategoryFilter","productStatusFilter"].forEach(id=>$(id).addEventListener(id==="productSearch"?"input":"change",applyProductFilters));
+
   return section;
 }
 function message(text){$("commerceStatus").textContent=text;}
@@ -107,10 +113,11 @@ async function uploadImages(files, oldUrls=[]){
 async function loadProducts(){
   const {data,error}=await db.from("products").select("*").order("created_at",{ascending:false});
   if(error)throw error;
-  $("productsTable").innerHTML=data.length?'<table><thead><tr><th>Produk</th><th>SKU</th><th>Kategori</th><th>Harga</th><th>Status</th><th>Aksi</th></tr></thead><tbody>'+
-    data.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+esc(p.sku)+'</td><td>'+esc(p.category)+'</td><td>'+money(p.price)+'</td><td>'+(p.is_published?"Tayang":"Draft")+'</td><td><button data-edit="'+p.id+'">Edit</button> <button data-delete="'+p.id+'">Hapus</button></td></tr>').join("")+'</tbody></table>':'<p class="muted">Belum ada produk dari dashboard.</p>';
+  $("productsTable").innerHTML=data.length?'<table><thead><tr><th>Foto</th><th>Nama Produk</th><th>SKU</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead><tbody>'+
+    data.map(p=>'<tr data-category="'+esc(p.category)+'" data-status="'+(p.is_published?"published":"draft")+'"><td>'+(p.image_urls?.[0]?'<img src="'+esc(p.image_urls[0])+'" alt="" loading="lazy" style="width:48px;height:48px;object-fit:cover;border-radius:7px">':'—')+'</td><td><strong>'+esc(p.name)+'</strong>'+(p.is_featured?'<br><small>Produk unggulan</small>':"")+'</td><td>'+esc(p.sku)+'</td><td>'+esc(p.category)+'</td><td>'+money(p.price)+'</td><td>'+esc(p.stock)+' '+esc(p.unit)+'</td><td>'+(p.is_published?'<span class="status">Tayang</span>':'<span class="muted">Draft</span>')+'</td><td><button data-edit="'+p.id+'">Edit</button> <button data-delete="'+p.id+'">Hapus</button></td></tr>').join("")+'</tbody></table>':'<p class="muted">Belum ada produk dari dashboard.</p>';
   $("campaignProduct").innerHTML=data.map(p=>'<option value="'+p.id+'">'+esc(p.name)+' · '+esc(p.sku)+'</option>').join("");
-  $("productsTable").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editProduct(data.find(p=>p.id===b.dataset.edit)));
+  $("productsTable").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{editProduct(data.find(p=>p.id===b.dataset.edit));$("productForm").classList.remove("hidden");});
+  const q=$("productSearch").value.trim().toLowerCase(),cat=$("productCategoryFilter").value,sf=$("productStatusFilter").value;$("productsTable").querySelectorAll("tbody tr").forEach(row=>{row.hidden=!(row.innerText.toLowerCase().includes(q)&&(!cat||row.dataset.category===cat)&&(!sf||row.dataset.status===sf));});
   $("productsTable").querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{if(!confirm("Hapus produk ini? Riwayat transaksi akan tetap menyimpan snapshot produk."))return;const {error}=await db.from("products").delete().eq("id",b.dataset.delete);if(error)message(error.message);else{message("Produk dihapus.");await loadProducts();}});
 }
 function editProduct(p){
@@ -157,10 +164,10 @@ function wireForms(){
       const payload={name,sku,slug:slugify(name)+"-"+slugify(sku),category:f.category.value,price:Number(f.price.value),stock:Number(f.stock.value),unit:f.unit.value.trim(),description:f.description.value.trim(),tax_percent:f.tax_percent.value===""?null:Number(f.tax_percent.value),youtube_url:f.youtube_url.value.trim()||null,image_urls:images,is_published:f.is_published.checked,is_featured:f.is_featured.checked,updated_by:user.id};
       if(editingId){const {error}=await db.from("products").update(payload).eq("id",editingId);if(error)throw error;}
       else{payload.created_by=user.id;const {error}=await db.from("products").insert(payload);if(error)throw error;}
-      resetForm();message("Produk berhasil disimpan.");await loadProducts();
+      resetForm();$("productForm").classList.add("hidden");message("Produk berhasil disimpan.");await loadProducts();
     }catch(err){message("Gagal menyimpan produk: "+(err.message||err));}finally{button.disabled=false;}
   };
-  $("cancelEdit").onclick=resetForm;
+  $("cancelEdit").onclick=()=>{resetForm();$("productForm").classList.add("hidden");};
   $("campaignForm").onsubmit=async e=>{
     e.preventDefault();const f=e.currentTarget.elements;
     const payload={product_id:f.product_id.value,title:f.title.value.trim(),subject:f.subject.value.trim(),body_html:f.body_html.value.trim(),channel:f.channel.value,audience:f.audience.value,status:f.scheduled_at.value?"scheduled":"draft",scheduled_at:f.scheduled_at.value?new Date(f.scheduled_at.value).toISOString():null,created_by:user.id};
