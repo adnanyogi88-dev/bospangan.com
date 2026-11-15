@@ -7,6 +7,52 @@ const money=n=>"Rp"+Number(n||0).toLocaleString("id-ID");
 const status=(s)=>{ $("status").textContent=s; };
 const table=(headers,rows)=>rows.length?'<table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join("")+'</tr></thead><tbody>'+rows.join("")+'</tbody></table>':'<p class="muted">Belum ada data.</p>';
 let currentUser=null, profile=null;
+
+function setupAdminNavigation(){
+ document.body.classList.add("admin-mode");
+ const nav=document.querySelector(".admin-nav");
+ if(!nav)return;
+ const admin=$("adminView");
+ const panelFor=id=>$(id)?.closest(".panel");
+ const destinations={
+  overview:()=>{admin.querySelectorAll(":scope > .panel,:scope > .cards").forEach(el=>el.classList.remove("hidden"));admin.querySelectorAll(":scope > .panel").forEach(el=>el.classList.add("hidden"));},
+  members:()=>showPanels([panelFor("membersTable")]),
+  users:()=>showPanels([panelFor("membersTable")]),
+  applications:()=>showPanels([panelFor("applicationsTable")]),
+  commissions:()=>showPanels([panelFor("commissionForm"),panelFor("adminCommissions")]),
+  payouts:()=>showPanels([panelFor("adminPayoutRequests")]),
+  affiliate:()=>showPanels([panelFor("applicationsTable"),panelFor("commissionForm"),panelFor("adminCommissions"),panelFor("adminPayoutRequests")]),
+  products:()=>showCommerceTab("products"),
+  orders:()=>showCommerceTab("orders"),
+  campaigns:()=>showCommerceTab("campaigns"),
+  settings:()=>showCommerceTab("settings")
+ };
+ function showPanels(panels){
+  const all=[...admin.querySelectorAll(":scope > .panel")];
+  all.forEach(p=>p.classList.add("hidden"));
+  admin.querySelectorAll(":scope > .cards").forEach(p=>p.classList.add("hidden"));
+  panels.filter(Boolean).forEach(p=>p.classList.remove("hidden"));
+ }
+ function showCommerceTab(tab){
+  const section=$("commerceAdmin");
+  if(!section){status("Panel Commerce sedang dimuat. Coba kembali sebentar lagi.");return;}
+  showPanels([section]);
+  const button=section.querySelector('[data-tab="'+tab+'"]');
+  if(button)button.click();
+ }
+ nav.querySelectorAll("[data-admin-target]").forEach(button=>button.addEventListener("click",()=>{
+  const key=button.dataset.adminTarget;
+  nav.querySelectorAll("[data-admin-target]").forEach(b=>b.classList.toggle("active",b===button));
+  if(destinations[key]){destinations[key]();return;}
+  showPanels([]);
+  let placeholder=$("adminFeaturePlaceholder");
+  if(!placeholder){placeholder=document.createElement("section");placeholder.id="adminFeaturePlaceholder";placeholder.className="panel";admin.append(placeholder);}
+  placeholder.classList.remove("hidden");
+  const names={banners:"Banner",content:"Artikel & Halaman",categories:"Kategori Produk",invoices:"Invoice",customers:"Customer",reports:"Laporan"};
+  placeholder.innerHTML='<h3>'+esc(names[key]||"Modul Admin")+'</h3><p class="muted">Kerangka antarmuka modul '+esc(names[key]||"ini")+' sedang disiapkan. Data dan tindakan belum dihubungkan ke database sehingga tidak ada informasi contoh yang ditampilkan sebagai data nyata.</p><div class="status">Belum terhubung ke backend.</div>';
+ }));
+}
+
 async function init(){
  const {data:{session}}=await supabase.auth.getSession();
  if(!session){location.href="/";return;}
@@ -21,7 +67,7 @@ async function init(){
  $("favoriteCount").textContent=(()=>{try{return JSON.parse(localStorage.getItem("bospangan-v1-favorites")||"[]").length}catch{return 0}})();
  $("memberView").classList.remove("hidden");
  if(profile.role==="affiliate"){$("memberView").classList.add("hidden");$("affiliateView").classList.remove("hidden");await loadAffiliate();}
- if(["admin","super_admin"].includes(profile.role)){$("memberView").classList.add("hidden");$("affiliateView").classList.add("hidden");$("adminView").classList.remove("hidden");await loadAdmin();}
+ if(["admin","super_admin"].includes(profile.role)){$("memberView").classList.add("hidden");$("affiliateView").classList.add("hidden");$("adminView").classList.remove("hidden");setupAdminNavigation();await loadAdmin();}
  if(profile.role==="member")await loadApplication();
  status("Dashboard siap. Data ditampilkan sesuai hak akses akun.");
 }
