@@ -29,7 +29,7 @@ as $$
   );
 $$;
 revoke all on function public.is_landing_page_admin() from public;
-grant execute on function public.is_landing_page_admin() to authenticated;
+grant execute on function public.is_landing_page_admin() to anon, authenticated;
 
 drop policy if exists "Public can read published landing pages" on public.landing_pages;
 create policy "Public can read published landing pages"
