@@ -158,12 +158,14 @@ async function activate(){
 }
 function openModule(){
   const admin=$("adminView");
+  if(!$("landingPagesPanel"))panelMarkup();
   admin.querySelectorAll(":scope > .panel").forEach(p=>p.classList.add("hidden"));
   admin.querySelectorAll(":scope > .cards").forEach(p=>p.classList.add("hidden"));
   $("landingPagesPanel").classList.remove("hidden");
   $("landingPagesPanel").classList.add("admin-panel-active");
   activate();
 }
+window.openLandingPagesModule = openModule;
 document.addEventListener("click",event=>{
   const button=event.target.closest("[data-admin-target='content']");
   if(!button)return;
