@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>Landing Page | Bos Pangan</title>
+<link rel="icon" href="/assets/bospangan-icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fff;color:#243447;font:16px/1.75 Inter,system-ui,sans-serif}.site-header{background:#0d461a;color:#fff}.header-inner{width:min(1180px,92%);margin:auto;padding:17px 0;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font-weight:850;line-height:1.2}.brand img{width:64px;height:54px;object-fit:contain}.brand small{display:block;font-size:12px;font-weight:700}.header-inner nav{display:flex;gap:22px;flex-wrap:wrap}.header-inner nav a{color:#fff;text-decoration:none;font-weight:600}.hero{background:#f3f7f0}.wrap{width:min(1000px,92%);margin:auto}.hero-inner{padding:56px 0 42px}.eyebrow{color:#0d7540;text-transform:uppercase;letter-spacing:.1em;font-size:12px;font-weight:800}.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.12;letter-spacing:-.04em;margin:12px 0 18px;color:#173e2b}.excerpt{font-size:19px;color:#5c6d61;max-width:780px}.primary-image{width:100%;max-height:480px;object-fit:cover;border-radius:16px;margin:26px 0 0}.content{padding:42px 0 80px;max-width:850px}.content h2{font-size:30px;line-height:1.25;margin:34px 0 12px;color:#173e2b}.content h3{font-size:23px;color:#173e2b}.content p{margin:0 0 18px}.content img{max-width:100%;height:auto;border-radius:12px}.content a{color:#087b49}.content blockquote{margin:24px 0;padding:14px 22px;border-left:4px solid #0d7540;background:#f3f7f0}.content table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}.content td,.content th{border:1px solid #dce5dc;padding:10px;text-align:left}.footer{background:#0d461a;color:#fff;padding:28px 0}.footer a{color:#fff}.loading,.not-found{padding:70px 0;text-align:center}.not-found a{color:#0d7540}@media(max-width:640px){.header-inner{align-items:flex-start;flex-direction:column}.header-inner nav{gap:14px}.hero-inner{padding:38px 0 30px}.content{padding:28px 0 55px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+</head>
+<body>
+<header class="site-header"><div class="header-inner"><a class="brand" href="/"><img src="/assets/bos-pangan-logo.webp" alt="Bos Pangan"><span>BOS PANGAN<small>Juara Pangan Lokal</small></span></a><nav><a href="/">Beranda</a><a href="/#katalog">Produk</a><a href="/blog/">Blog</a><a href="/#kontak">Kontak</a></nav></div></header>
+<main id="page"><div class="wrap loading">Memuat halaman…</div></main>
+<footer class="footer"><div class="wrap">© <span id="year"></span> Bos Pangan · Juara Pangan Lokal</div></footer>
+<script type="module" src="/landingpage.js"></script>
+</body></html>
