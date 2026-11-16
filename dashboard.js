@@ -16,6 +16,7 @@ function setupAdminNavigation(){
  const panelFor=id=>$(id)?.closest(".panel");
  const destinations={
   overview:()=>{admin.querySelectorAll(":scope > .panel,:scope > .cards").forEach(el=>el.classList.remove("hidden"));admin.querySelectorAll(":scope > .panel").forEach(el=>el.classList.add("hidden"));},
+  content:()=>{if(typeof window.openLandingPagesModule==="function"){window.openLandingPagesModule();}else{status("Modul Landing Page belum termuat. Muat ulang halaman dan coba lagi.");}},
   members:()=>showPanels([panelFor("membersTable")]),
   users:()=>showPanels([panelFor("membersTable")]),
   applications:()=>showPanels([panelFor("applicationsTable")]),
