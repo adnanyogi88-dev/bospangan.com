@@ -30,6 +30,7 @@ function panelMarkup() {
         <div class="row">
           <label>Nama produk<input name="name" maxlength="160" required></label>
           <label>SKU<input name="sku" maxlength="64" required></label>
+          <label>Lokasi SKU<input name="sku_location" maxlength="100" placeholder="Contoh: Rak A-01 / Gudang 1"></label>
         </div>
         <div class="row">
           <label>Kategori<select name="category" required>${categories.map(c=>'<option>'+c+'</option>').join("")}</select></label>
@@ -113,8 +114,8 @@ async function uploadImages(files, oldUrls=[]){
 async function loadProducts(){
   const {data,error}=await db.from("products").select("*").order("created_at",{ascending:false});
   if(error)throw error;
-  $("productsTable").innerHTML=data.length?'<table><thead><tr><th>Foto</th><th>Nama Produk</th><th>SKU</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead><tbody>'+
-    data.map(p=>'<tr data-category="'+esc(p.category)+'" data-status="'+(p.is_published?"published":"draft")+'"><td>'+(p.image_urls?.[0]?'<img src="'+esc(p.image_urls[0])+'" alt="" loading="lazy" style="width:48px;height:48px;object-fit:cover;border-radius:7px">':'—')+'</td><td><strong>'+esc(p.name)+'</strong>'+(p.is_featured?'<br><small>Produk unggulan</small>':"")+'</td><td>'+esc(p.sku)+'</td><td>'+esc(p.category)+'</td><td>'+money(p.price)+'</td><td>'+esc(p.stock)+' '+esc(p.unit)+'</td><td>'+(p.is_published?'<span class="status">Tayang</span>':'<span class="muted">Draft</span>')+'</td><td><button data-edit="'+p.id+'">Edit</button> <button data-delete="'+p.id+'">Hapus</button></td></tr>').join("")+'</tbody></table>':'<p class="muted">Belum ada produk dari dashboard.</p>';
+  $("productsTable").innerHTML=data.length?'<table><thead><tr><th>Foto</th><th>Nama Produk</th><th>SKU</th><th>Lokasi SKU</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead><tbody>'+
+    data.map(p=>'<tr data-category="'+esc(p.category)+'" data-status="'+(p.is_published?"published":"draft")+'"><td>'+(p.image_urls?.[0]?'<img src="'+esc(p.image_urls[0])+'" alt="" loading="lazy" style="width:48px;height:48px;object-fit:cover;border-radius:7px">':'—')+'</td><td><strong>'+esc(p.name)+'</strong>'+(p.is_featured?'<br><small>Produk unggulan</small>':"")+'</td><td>'+esc(p.sku)+'</td><td>'+(esc(p.sku_location)||"—")+'</td><td>'+esc(p.category)+'</td><td>'+money(p.price)+'</td><td>'+esc(p.stock)+' '+esc(p.unit)+'</td><td>'+(p.is_published?'<span class="status">Tayang</span>':'<span class="muted">Draft</span>')+'</td><td><button data-edit="'+p.id+'">Edit</button> <button data-delete="'+p.id+'">Hapus</button></td></tr>').join("")+'</tbody></table>':'<p class="muted">Belum ada produk dari dashboard.</p>';
   $("campaignProduct").innerHTML=data.map(p=>'<option value="'+p.id+'">'+esc(p.name)+' · '+esc(p.sku)+'</option>').join("");
   $("productsTable").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{editProduct(data.find(p=>p.id===b.dataset.edit));$("productForm").classList.remove("hidden");});
   const q=$("productSearch").value.trim().toLowerCase(),cat=$("productCategoryFilter").value,sf=$("productStatusFilter").value;$("productsTable").querySelectorAll("tbody tr").forEach(row=>{row.hidden=!(row.innerText.toLowerCase().includes(q)&&(!cat||row.dataset.category===cat)&&(!sf||row.dataset.status===sf));});
@@ -122,7 +123,7 @@ async function loadProducts(){
 }
 function editProduct(p){
   editingId=p.id;const f=$("productForm").elements;
-  for(const key of ["name","sku","category","price","stock","unit","description","tax_percent","youtube_url"])f[key].value=p[key]??"";
+  for(const key of ["name","sku","sku_location","category","price","stock","unit","description","tax_percent","youtube_url"])f[key].value=p[key]??"";
   f.is_published.checked=p.is_published;f.is_featured.checked=p.is_featured;
   $("productFormTitle").textContent="Edit produk · "+p.sku;
   $("currentImages").textContent="Foto tersimpan: "+(p.image_urls||[]).length+". Foto baru akan ditambahkan; pilih ulang maksimal 5 foto total.";
@@ -161,7 +162,7 @@ function wireForms(){
       const existing=editingId?(await db.from("products").select("image_urls").eq("id",editingId).single()).data:null;
       const selected=[...f.images.files];const images=await uploadImages(selected,existing?.image_urls||[]);
       const name=f.name.value.trim(),sku=f.sku.value.trim().toUpperCase();
-      const payload={name,sku,slug:slugify(name)+"-"+slugify(sku),category:f.category.value,price:Number(f.price.value),stock:Number(f.stock.value),unit:f.unit.value.trim(),description:f.description.value.trim(),tax_percent:f.tax_percent.value===""?null:Number(f.tax_percent.value),youtube_url:f.youtube_url.value.trim()||null,image_urls:images,is_published:f.is_published.checked,is_featured:f.is_featured.checked,updated_by:user.id};
+      const payload={name,sku,sku_location:f.sku_location.value.trim(),slug:slugify(name)+"-"+slugify(sku),category:f.category.value,price:Number(f.price.value),stock:Number(f.stock.value),unit:f.unit.value.trim(),description:f.description.value.trim(),tax_percent:f.tax_percent.value===""?null:Number(f.tax_percent.value),youtube_url:f.youtube_url.value.trim()||null,image_urls:images,is_published:f.is_published.checked,is_featured:f.is_featured.checked,updated_by:user.id};
       if(editingId){const {error}=await db.from("products").update(payload).eq("id",editingId);if(error)throw error;}
       else{payload.created_by=user.id;const {error}=await db.from("products").insert(payload);if(error)throw error;}
       resetForm();$("productForm").classList.add("hidden");message("Produk berhasil disimpan.");await loadProducts();
