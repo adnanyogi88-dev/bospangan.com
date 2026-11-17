@@ -106,6 +106,7 @@ create table if not exists public.products (
   updated_at timestamptz not null default now(),
   constraint products_max_five_images check (cardinality(image_urls) <= 5)
 );
+alter table public.products add column if not exists sku_location text not null default '';
 create index if not exists products_category_published_idx on public.products(category,is_published);
 create index if not exists products_created_at_idx on public.products(created_at desc);
 alter table public.products enable row level security;
